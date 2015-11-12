@@ -1,0 +1,4 @@
+[submodule "tkobr-addons"]
+	path = tkobr-addons
+	url = https://github.com/thinkopensolutions/tkobr-addons.git
+	branch = 8.0
