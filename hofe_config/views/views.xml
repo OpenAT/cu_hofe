@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <!-- INHERIT: CALENDAR_LOG_PROJECT FORM VIEW: Add Attributes -->
+        <record id="view_calendar_event_form_calendar_log_project_cu_hof" model="ir.ui.view">
+            <field name="name">hofe_config.view_calendar_event_form_calendar_log</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar_log_project.view_calendar_event_form_calendar_log_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='project_id']" position="attributes">
+                    <attribute name="required">True</attribute>
+                </xpath>
+                <xpath expr="//field[@name='task_id']" position="attributes">
+                    <attribute name="required">True</attribute>
+                </xpath>
+                <xpath expr="//field[@name='mainpartner_id']" position="attributes">
+                    <attribute name="required">True</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- PARTNER FORM: add additional e-mail fields -->
+        <record id="view_partners_form_crm1_hofe_config" model="ir.ui.view">
+            <field name="name">view.res.partner.form.hofe_config</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='title']" position="after">
+                        <div style=" margin-top: 1em; color: grey; font-size: 10px" colspan="2">
+                            Additional E-Mail addresses can NOT be used to send E-Mails!
+                        </div>
+                        <field name="email_a" widget="email" attrs="{'required': [('user_ids','!=', [])]}"/>
+                        <field name="email_b" widget="email" attrs="{'required': [('user_ids','!=', [])]}"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+    </data>
+</openerp>
