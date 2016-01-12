@@ -4,7 +4,7 @@
 		<record id="cam_hr_overtime_timesheet_sheet_summary" model="ir.ui.view">
             <field name="name">hr_timesheet_sheet.sheet_summary</field>
             <field name="model">hr_timesheet_sheet.sheet.day_detail</field>
-            <field name="sequence">30</field>
+            <!--<field name="sequence">30</field>-->
             <field name="arch" type="xml">
 	            <tree string="Summary" colors="blue:vacation&gt;0 or illness&gt;0 or others&gt;0;grey:planned==0;">
 	                <field name="sheet_id" invisible="1"/>
@@ -32,7 +32,7 @@
         <record id="cam_hr_overtime_timesheet_difference" model="ir.ui.view">
             <field name="name">hr_timesheet_sheet.sheet_difference</field>
             <field name="model">hr_timesheet_sheet.sheet.day</field>
-            <field name="sequence">30</field>
+            <!--<field name="sequence">30</field>-->
             <field name="arch" type="xml">
             <tree string="Booking Differences" colors="red:total_difference &gt; 0.25 or total_difference &lt; -0.25">
                 <field name="sheet_id" invisible="1"/>
@@ -98,7 +98,7 @@
 	                </page>
 	            </notebook>   
             </field>
-            <field name="sequence">20</field>
+            <!--<field name="sequence">20</field>-->
         </record>
           
         <record id="cam_hr_overtime_timesheet_sheet_tree" model="ir.ui.view">
@@ -110,7 +110,7 @@
                     <field name="total_overtime"/>
                 </field>
             </field>
-            <field name="sequence">20</field>
+            <!--<field name="sequence">20</field>-->
         </record>        
 
         <record id="cam_hr_overtime_hr_holiday_form" model="ir.ui.view">
@@ -122,7 +122,7 @@
                     <field name="number_of_days_temp" invisible="1"/>
                 </field>
             </field>
-            <field name="sequence">20</field>
+            <!--<field name="sequence">20</field>-->
         </record>
         
         <record id="cam_hr_overtime_hr_holiday_form2" model="ir.ui.view">
@@ -134,7 +134,7 @@
                  	<field name="effective_date" required="1"/>               
                 </field>
             </field>
-            <field name="sequence">20</field>
+            <!--<field name="sequence">20</field>-->
         </record>
         
         <record id="cam_hr_overtime_hr_attendance_form" model="ir.ui.view">

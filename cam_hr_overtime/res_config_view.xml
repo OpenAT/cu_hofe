@@ -4,7 +4,8 @@
         <record id="cam_hr_overtime_settings" model="ir.ui.view">
             <field name="name">cam_hr_overtime.hr.config.inherit</field>
             <field name="model">hr.config.settings</field>
-            <field name="inherit_id" ref="hr_attendance.hr_attendace_group"/>
+            <!--<field name="inherit_id" ref="hr_attendance.hr_attendace_group"/>-->
+            <field name="inherit_id" ref="hr.view_human_resources_configuration"/>
             <field name="arch" type="xml">
                  <xpath expr="//div[@name='hr_attendance']" position="after">
                     <div>
