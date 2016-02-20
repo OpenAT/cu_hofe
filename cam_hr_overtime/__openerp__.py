@@ -45,7 +45,8 @@
         'cam_hr_overtime_report.xml',
         'overtime_correction_view.xml',
         'res_config_view.xml',
-        'report/overtime_report_view.xml'
+        'report/overtime_report_view.xml',
+        'report/report_overtime_qweb.xml',
     ],
     'installable': True,
     'active': False,

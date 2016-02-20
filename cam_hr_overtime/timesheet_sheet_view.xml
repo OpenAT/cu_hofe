@@ -59,20 +59,28 @@
             <field name="model">hr_timesheet_sheet.sheet</field>
             <field name="inherit_id" ref="hr_timesheet_sheet.hr_timesheet_sheet_form"/>
             <field name="arch" type="xml">
-            	<button name="button_confirm" states="draft" string="Submit to Manager" type="object" class="oe_highlight"/>
-	            <button name="button_confirm" position="before">  
-					<button icon="gtk-execute" name="button_compute" string="Compute" type="object" attrs="{'invisible':[('state','!=','draft')]}"/>
-	            </button>   
+            	<!--<button name="button_confirm" states="draft" string="Submit to Managers" type="object" class="oe_highlight"/>-->
+	            <button name="button_confirm" position="before">
+					<button name="button_compute"
+                            string="Compute"
+                            type="object"
+                            attrs="{'invisible':[('state','!=','draft')]}"/>
+	            </button>
 
-	            <button name="button_confirm" position="after">
-	            	<button type="action" groups="base.group_hr_attendance"
+	            <div name="buttons" position="inside">
+                    <button type="action"
+                            class="oe_stat_button"
+                            icon="fa-clock-o"
                             name="%(cam_hr_overtime_show_summary)d"
                             string="Summary" />
-	            	<button type="action" groups="base.group_hr_attendance"
+                    <button type="action"
+                            class="oe_stat_button"
+                            icon="fa-clock-o"
                             name="%(cam_hr_overtime_show_difference)d"
-                            string="Booking Differences" />                                                        
-	            </button>
-	                        	
+                            string="Differences" />
+	            </div>
+
+
                 <field name="action" position = "after">
                      <field name="action_desc"/>
                      <field name="flag"/>
@@ -86,7 +94,33 @@
 					<div><button name="attendance_action_change" string="Sign Out - Out of Office" attrs="{'invisible':[('state_attendance','in',['present','absent'])]}" type="object" context="{'sign_flag':'B','out_of_office': True}" class="oe_link"/></div>
 					 --><div><button name="button_lunch" string="Lunch" attrs="{'invisible':[('state_attendance','in',['present_out','absent'])]}" type="object" class="oe_link" context="{}"/></div>
 				</button>
-				
+
+                <field name="company_id" position="after">
+                    <h3 colspan="2" style="padding: 1em 0 0.5em 0">Summary Approved Timesheets:</h3>
+                    <field name="sum_vacation_days"/>
+                    <field name="sum_vacation"/>
+                    <field name="sum_illness"/>
+                    <field name="sum_others"/>
+                    <field name="sum_attendance"/>
+                    <field name="sum_overtime"/>
+                    <field name="user_id"/>
+
+                </field>
+
+                <field name="total_attendance" position="before">
+                    <h3 colspan="2" style="padding: 0 0 0.5em 0">Current Month:</h3>
+                    <field name="total_vacation_days"/>
+                    <field name="total_attendance2"/>
+                    <field name="total_vacation"/>
+                    <field name="total_illness"/>
+                    <field name="total_others"/>
+                    <!--<field name="total_planned" string="Planned Attendance this Month"/>-->
+                    <field name="total_overtime" string="Calculated Attendance"/>
+                    <field name="total_overtime_correction"/>
+                    <field name="total_overtime_and_correction"/>
+                    <h3 colspan="2" style="padding: 1em 0 0.5em 0">Project Summary:</h3>
+                </field>
+
 	            <notebook position="inside">
 	                 <page string="Overtime Corrections">
 	                    <field colspan="4" name="correction_ids" nolabel="1">
@@ -96,7 +130,21 @@
 	                        </tree>
 	                    </field>
 	                </page>
-	            </notebook>   
+                    <page string="Attendance Summary">
+                        <field colspan="4" name="day_details" nolabel="1">
+                            <tree string="Summary" colors="blue:vacation&gt;0 or illness&gt;0 or others&gt;0;grey:planned==0;">
+                                <field name="sheet_id" invisible="1"/>
+                                <field name="name"/>
+                                <field name="planned" widget="float_time" sum="Total Planned"/>
+                                <field name="vacation" widget="float_time" sum="Total Vacation"/>
+                                <field name="illness" widget="float_time" sum="Total Illness"/>
+                                <field name="others" widget="float_time" sum="Total Others"/>
+                                <field name="attendance" widget="float_time" sum="Total Attendance" />
+                                <field name="overtime" widget="float_time" sum="Total Overtime"/>
+                            </tree>
+                        </field>
+                    </page>
+	            </notebook>
             </field>
             <!--<field name="sequence">20</field>-->
         </record>

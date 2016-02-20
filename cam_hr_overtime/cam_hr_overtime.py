@@ -27,7 +27,10 @@ from dateutil.relativedelta import *
 from mx import DateTime
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
-from openerp import tools
+from openerp import tools, api
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class overtime_correction(osv.osv):
     _name = 'overtime.correction'
@@ -124,6 +127,7 @@ class hr_timesheet_sheet(osv.osv):
                 
                 res[sheet.id]['total_overtime'] = overtime
                 res[sheet.id]['total_overtime_correction'] = overtime_correction
+                res[sheet.id]['total_overtime_and_correction'] = overtime + overtime_correction
                 res[sheet.id]['total_planned'] = planned
                 res[sheet.id]['total_vacation'] = vacation
                 res[sheet.id]['total_vacation_days'] = vacation_days
@@ -133,7 +137,7 @@ class hr_timesheet_sheet(osv.osv):
                 
                 #check if confirming is allowed
                 if context.get('simulation',False):
-                    res_db = self.read(cr,uid,sheet.id,['total_overtime','total_overtime_correction','total_planned','total_vacation','total_vacation_days','total_illness','total_others','total_attendance2'])
+                    res_db = self.read(cr,uid,sheet.id,['total_overtime','total_overtime_correction','total_overtime_and_correction','total_planned','total_vacation','total_vacation_days','total_illness','total_others','total_attendance2'])
                     if res_db.get('id',False):
                         del res_db['id']
                         
@@ -236,7 +240,7 @@ class hr_timesheet_sheet(osv.osv):
                 res[sheet.id]['sum_planned'] = 0    
                 res[sheet.id]['sum_vacation_days'] = 0   
                                         
-        return res;
+        return res
     
     def _state_attendance(self, cr, uid, ids, name, args, context=None):
         emp_obj = self.pool.get('hr.employee')
@@ -261,6 +265,7 @@ class hr_timesheet_sheet(osv.osv):
         'total_planned': fields.float(string='Planned Hours', readonly=True),
         'total_overtime': fields.float(string='Overtime', readonly=True),
         'total_overtime_correction': fields.float(string='Overtime Corrections', readonly=True),
+        'total_overtime_and_correction': fields.float(string='Total Overtime', readonly=True),
         'total_vacation': fields.float(string='Vacation', readonly=True),
         'total_illness': fields.float(string='Illness', readonly=True),
         'total_others': fields.float(string='Others', readonly=True),
@@ -276,9 +281,9 @@ class hr_timesheet_sheet(osv.osv):
         'day_details': fields.one2many('hr_timesheet_sheet.sheet.day_detail', 'sheet_id', 'Day Details', readonly=True),
         'vacation_alloc_days': fields.function(_vacation_allocations, string='Vacation Allocations'),
         'project_hours' : fields.one2many('hr_timesheet_sheet.sheet.project_hours', 'sheet_id', 'Project Hours', readonly=True),
-#v7        'attendances_ids' : one2many_mod2('hr.attendance', 'sheet_id', 'Attendances', readonly=False,), # SET readonly to False
         'correction_ids' : fields.one2many('overtime.correction', 'timesheet_id', 'Overtime Corrections',readonly=True),
         'state_attendance' : fields.function(_state_attendance, type='selection', selection=[('absent', 'Absent'), ('present', 'Present'), ('present_out', 'Present (Out of Office)'),('none','No employee defined')], string='Current Status'),
+        #'remaining_leaves': fields.related('employee_id', 'remaining_leaves', type='function', string='Remaining Legal Leaves')
     }
     
     def _default_name(self,cr, uid, context=None):
@@ -365,9 +370,31 @@ class hr_timesheet_sheet(osv.osv):
             context={}
         self._total_sums(cr, uid, ids,context=context)
         return True
-    
+
+    def create(self, cr, uid, values, context=None):
+        timesheet = super(hr_timesheet_sheet, self).create(cr, uid, values, context=context)
+        try:
+            ts = self.browse(cr, uid, [timesheet, ])
+            if ts.employee_id.contract_id.default_overtime:
+                # Add default overtime
+                overtime = {
+                    'value_hours': ts.employee_id.contract_id.default_overtime,
+                    'name': _('Default Overtime from Employee Contract'),
+                    'timesheet_id': ts.id,
+                    'employee_id': ts.employee_id.id,
+                }
+                overtime_obj = self.pool.get('overtime.correction')
+                overtime_obj.create(cr, uid, overtime, context=context)
+        except:
+            _logger.warning('Could not create default overtime from employee contract for timesheet.')
+        return timesheet
+
 hr_timesheet_sheet()
-    
+
+
+
+
+
 class hr_timesheet_sheet_sheet_day_detail(osv.osv):
     _name = "hr_timesheet_sheet.sheet.day_detail"
     _description = "Days by Period"
@@ -557,7 +584,12 @@ class resource_calendar(osv.osv):
 #  - 2 contracts of the same employee should not overlap
 class hr_contract(osv.osv):
     _inherit = "hr.contract"
-    
+
+    #default_overtime = Float(string='Default Overtime')
+    _columns = {
+        'default_overtime': fields.float(string='Default Overtime', readonly=False),
+    }
+
     def write(self, cr, uid, ids, vals, context):
         if vals.get('working_hours',False) or vals.get('date_start',False) or vals.get('employee_id',False):
             contract = self.browse(cr,uid,ids)[0]
