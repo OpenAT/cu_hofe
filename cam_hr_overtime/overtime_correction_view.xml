@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <form string="Overtime Correction" version="7.0">
                  <sheet>
-                    <group style="width:30%%">
+                    <group style="width:30%">
                     		<field name="name" placeholder="z.B. Auszahlung Überstunden"/>
 	                        <field name="employee_id" on_change="on_change_employee(employee_id, timesheet_id)" />
 	                        <field name="timesheet_id" on_change="on_change_employee(employee_id, timesheet_id)"/>

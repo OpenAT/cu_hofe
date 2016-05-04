@@ -104,7 +104,8 @@
                     <field name="sum_attendance"/>
                     <field name="sum_overtime"/>
                     <field name="user_id"/>
-
+                    <h3 colspan="2" style="padding: 1em 0 0.5em 0">Remaining vacation in days:</h3>
+                    <field name="sum_vacation_days_remaining"/>
                 </field>
 
                 <field name="total_attendance" position="before">
