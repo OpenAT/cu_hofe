@@ -29,6 +29,7 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 from openerp import tools, api
 import logging
+from openerp import SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 
@@ -374,7 +375,7 @@ class hr_timesheet_sheet(osv.osv):
     def create(self, cr, uid, values, context=None):
         timesheet = super(hr_timesheet_sheet, self).create(cr, uid, values, context=context)
         try:
-            ts = self.browse(cr, uid, [timesheet, ])
+            ts = self.browse(cr, SUPERUSER_ID, [timesheet, ])
             if ts.employee_id.contract_id.default_overtime:
                 # Add default overtime
                 overtime = {
@@ -384,7 +385,7 @@ class hr_timesheet_sheet(osv.osv):
                     'employee_id': ts.employee_id.id,
                 }
                 overtime_obj = self.pool.get('overtime.correction')
-                overtime_obj.create(cr, uid, overtime, context=context)
+                overtime_obj.create(cr, SUPERUSER_ID, overtime, context=context)
         except:
             _logger.warning('Could not create default overtime from employee contract for timesheet.')
         return timesheet
