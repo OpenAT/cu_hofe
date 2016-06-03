@@ -44,7 +44,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>Kommt/Geht:</td>
-                                                    <td><span t-field="ts.total_attendance2"/></td>
+                                                    <td><span t-field="formatlang(ts.total_attendance2)"/></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Urlaub:</td>
@@ -99,7 +99,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>Kommt/Geht:</td>
-                                                    <td><span t-field="ts.sum_attendance"/></td>
+                                                    <td><span t-field="formatlang(ts.sum_attendance)"/></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Anwesenheit:</td>
@@ -116,7 +116,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td>Kommt/Geht:</td>
-                                                    <td><span t-field="ts.total_attendance"/></td>
+                                                    <td><span t-field="formatlang(ts.total_attendance)"/></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Projekterfassung:</td>
@@ -162,7 +162,7 @@
                                                     <td><span t-field="day.vacation"/></td>
                                                     <td><span t-field="day.illness"/></td>
                                                     <td><span t-field="day.others"/></td>
-                                                    <td><span t-field="day.attendance"/></td>
+                                                    <td><span t-esc="'%s:%s' % (str(day.attendance).split('.')[0], int(float(str('%.2f' % day.attendance).split('.')[1])/100*60))"/></td>
                                                     <td><span t-field="day.overtime"/></td>
                                                 </tr>
                                             </t>
